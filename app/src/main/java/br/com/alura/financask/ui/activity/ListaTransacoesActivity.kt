@@ -18,10 +18,11 @@ class ListaTransacoesActivity : AppCompatActivity() {
 
         val transacoes = listOf(
                 Transacao(valor = BigDecimal(20.5), tipo = Tipo.DESPESA, data = Calendar.getInstance()),
-                Transacao(valor = BigDecimal(100.0), tipo = Tipo.RECEITA, categoria = "Economia")
+                Transacao(valor = BigDecimal(100.0), tipo = Tipo.RECEITA, categoria = "Economia"),
+                Transacao(valor = BigDecimal(200.0), tipo = Tipo.DESPESA),
+                Transacao(valor = BigDecimal(500.0), categoria = "Prêmio", tipo = Tipo.RECEITA)
         )
 
-        lista_transacoes_listview.setAdapter(
-                ListaTransacoesAdapter(transacoes, this))
+        lista_transacoes_listview.adapter = ListaTransacoesAdapter(transacoes, this)
     }
 }
