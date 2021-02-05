@@ -2,16 +2,12 @@ package br.com.alura.financask.ui.activity
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.DatePicker
-import android.widget.Toast
 import br.com.alura.financask.R
 import br.com.alura.financask.extension.formataParaBrasileiro
 import br.com.alura.financask.model.Tipo
@@ -26,15 +22,15 @@ import java.util.*
 
 class ListaTransacoesActivity : AppCompatActivity() {
 
+    private val transacoes: MutableList<Transacao> = mutableListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_transacoes)
 
-        val transacoes : List<Transacao> = transaçõesDeExemplo()
+        configuraResumo()
 
-        configuraResumo(transacoes)
-
-        configuraLista(transacoes)
+        configuraLista()
 
         lista_transacoes_adiciona_receita.setOnClickListener {
 
@@ -91,33 +87,27 @@ class ListaTransacoesActivity : AppCompatActivity() {
                                 data = data,
                                 categoria = categoriaEmTexto
                         )
-                        Toast.makeText(this,
-                                "${transacaoCriada.valor} - " +
-                                     "${transacaoCriada.categoria} - " +
-                                     "${transacaoCriada.data.formataParaBrasileiro()} - " +
-                                     "${transacaoCriada.tipo}", Toast.LENGTH_LONG).show()
+                        atualizaTransacoes(transacaoCriada)
+                        lista_transacoes_adiciona_menu.close(true)
                     }
                     .setNegativeButton("Cancelar", null)
                     .show()
         }
     }
 
-    private fun configuraResumo(transacoes: List<Transacao>) {
+    private fun atualizaTransacoes(transacao: Transacao) {
+        transacoes.add(transacao)
+        configuraLista()
+        configuraResumo()
+    }
+
+    private fun configuraResumo() {
         val view = window.decorView
         val resumoView = ResumoView(view, this, transacoes)
         resumoView.atualiza()
     }
 
-    private fun configuraLista(transacoes: List<Transacao>) {
+    private fun configuraLista() {
         lista_transacoes_listview.adapter = ListaTransacoesAdapter(transacoes, this)
-    }
-
-    private fun transaçõesDeExemplo(): List<Transacao> {
-        return listOf(
-                Transacao(valor = BigDecimal(20.5), tipo = Tipo.DESPESA, data = Calendar.getInstance()),
-                Transacao(valor = BigDecimal(100.0), tipo = Tipo.RECEITA, categoria = "Economia"),
-                Transacao(valor = BigDecimal(200.0), tipo = Tipo.DESPESA, data = Calendar.getInstance()),
-                Transacao(valor = BigDecimal(500.0), tipo = Tipo.RECEITA, categoria = "Prêmio")
-        )
     }
 }
