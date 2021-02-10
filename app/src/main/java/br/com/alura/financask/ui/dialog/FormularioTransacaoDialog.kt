@@ -11,7 +11,6 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import br.com.alura.financask.R
-import br.com.alura.financask.delegate.TransacaoDelegate
 import br.com.alura.financask.extension.converteParaCalendar
 import br.com.alura.financask.extension.formataParaBrasileiro
 import br.com.alura.financask.model.Tipo
@@ -30,13 +29,13 @@ abstract class FormularioTransacaoDialog(private val context: Context,
     protected val campoCategoria: Spinner = viewCriada.form_transacao_categoria
     protected val campoData: EditText = viewCriada.form_transacao_data
 
-    fun chama(tipo: Tipo, transacaoDelegate: TransacaoDelegate) {
+    fun chama(tipo: Tipo, delegate: (transacao: Transacao) -> Unit) {
         configuraCampoData()
         configuraCampoCategoria(tipo)
-        configuraFormulario(tipo, transacaoDelegate)
+        configuraFormulario(tipo, delegate)
     }
 
-    private fun configuraFormulario(tipo: Tipo, transacaoDelegate: TransacaoDelegate) {
+    private fun configuraFormulario(tipo: Tipo, delegate: (transacao: Transacao) -> Unit) {
 
         val titulo = tituloPor(tipo)
 
@@ -58,7 +57,7 @@ abstract class FormularioTransacaoDialog(private val context: Context,
                             data = data,
                             categoria = categoriaEmTexto
                     )
-                    transacaoDelegate.delegate(transacaoCriada)
+                    delegate(transacaoCriada)
                 }
                 .setNegativeButton("Cancelar", null)
                 .show()
